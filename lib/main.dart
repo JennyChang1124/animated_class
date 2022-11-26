@@ -1,67 +1,76 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(const MyApp());
+void main() => runApp(MyApp());
 
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
+class MyApp extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: GFG(),
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  Widget build(BuildContext context){
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
+      home: MyHomePage(),
     );
   }
 }
 
-class GFG extends StatefulWidget {
-  const GFG({Key? key}) : super(key: key);
+class MyHomePage extends StatefulWidget{
+  const MyHomePage({Key? key}) : super(key: key);
+
 
   @override
-  State<GFG> createState() => _GFGState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _GFGState extends State<GFG> with TickerProviderStateMixin {
-  late AnimationController _controller;
-  bool _bool = true;
+class _MyHomePageState extends State<MyHomePage> {
+
+  bool takeOff = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Animation  Sample"),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              setState(
-                    () {
-                  _bool = !_bool;
-                },
-              );
-            },
-            child: Text("切換"),
-          ),
-        ],
+        title: const Text('Animation Sample'),
       ),
-      body: Center(
-        child: AnimatedCrossFade(
-          // First widget
-            firstChild: Container(
-              child:Icon(Icons.circle_notifications_outlined,size: 60,),
+      body: SizedBox(
+        child: Stack(
+          children: <Widget>[
+            AnimatedPositioned(
+              left: 100.0,
+              right: 100.0,
+              top: takeOff ? 150.0 : 600.0,
+              duration: const Duration(seconds: 3),
+              curve: Curves.fastOutSlowIn,
+              child: const Icon(
+                  Icons.airplanemode_active_outlined,
+                  color: Colors.blue,
+                  size: 48.0,
+              ),
             ),
-            secondChild: Container(
-                child:Icon(Icons.ice_skating,size: 60,)
+            Container(
+              alignment: Alignment.bottomCenter,
+              child: ElevatedButton.icon(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                      Colors.blue),
+                ),
+                icon: const Icon(Icons.airplanemode_active, color: Colors.white),
+                label: const Text('起飛'),
+                onPressed: () => {
+                  setState(() {
+                    takeOff = !takeOff;
+                  })
+                },
+              ),
             ),
-            crossFadeState:
-            _bool ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-            // Duration for crossFade animation.
-            duration: Duration(seconds: 1)),
+          ],
+        ),
       ),
     );
   }
+
+
 }
